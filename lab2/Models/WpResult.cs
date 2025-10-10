@@ -228,7 +228,7 @@ namespace lab2.Models
                 new PresetExample(
                     "Квадратное уравнение (упрощенное)",
                     "Вычисление корня квадратного уравнения при положительном дискриминанте",
-                    "if (d >= 0) { root := (-b + d) / (2 * a) } else { root := -999 }",
+                    "if (d >= 0) { root := d + b } else { root := -999 }",
                     "root != -999"
                 ),
                 new PresetExample(

@@ -281,6 +281,7 @@ namespace TestProject1
                 Assert.IsFalse(string.IsNullOrEmpty(wp.ToString()), "Предусловие не должно быть пустым");
             }
         }
+<<<<<<< HEAD
 
         [TestMethod]
         public void TestQuadraticEquationExample()
@@ -312,3 +313,7 @@ namespace TestProject1
 
     }
 }
+=======
+    }
+}
+>>>>>>> 7a3a1b29fb6eebbc796145bc219ed00da22737b1

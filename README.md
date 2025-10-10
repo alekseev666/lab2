@@ -198,7 +198,8 @@ lab2/
 ├── TestProject1/         # Юнит-тесты
 │   ├── ExpressionTests.cs      # Тесты выражений
 │   ├── PredicateTests.cs       # Тесты условий
-│   └── WeakestPreconditionTests.cs  # Тесты алгоритма WP
+│   ├── WeakestPreconditionTests.cs  # Тесты алгоритма WP
+│   └── IntegrationTests.cs     # Интеграционные тесты
 └── README.md            # Этот файл
 ```
 

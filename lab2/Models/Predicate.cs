@@ -3,36 +3,86 @@ using System.Collections.Generic;
 
 namespace lab2.Models
 {
-    // Базовый класс для всех условий
-    // Например: x > 5, y == 10, a > 0 И b < 20
+    /// <summary>
+    /// Базовый класс для всех условий в программе
+    /// </summary>
+    /// <remarks>
+    /// Это как шаблон для любых проверок и условий: сравнения, логические операции и т.д.
+    /// Например: x > 5, y == 10, a > 0 И b < 20
+    /// </remarks>
     public abstract class Predicate
     {
-        // Превращает условие в текст
+        /// <summary>
+        /// Превращает условие в текст, который можно снова разобрать
+        /// </summary>
+        /// <returns>Условие в виде текста</returns>
         public abstract override string ToString();
-        
-        // Заменяет переменную на выражение
-        // Например: x > 5, заменить x на (y + 2) = (y + 2) > 5
+
+        /// <summary>
+        /// Заменяет переменную на другое выражение в условии
+        /// </summary>
+        /// <param name="variableName">Имя переменной для замены</param>
+        /// <param name="newValue">Выражение, которое подставится вместо переменной</param>
+        /// <returns>Новое условие с замененной переменной</returns>
+        /// <example>
+        /// Было: x > 5, заменили x на (y + 2)
+        /// Стало: (y + 2) > 5
+        /// </example>
         public abstract Predicate ReplaceVariable(string variableName, Expression newValue);
-        
-        // Превращает условие в понятный человеческий язык
+
+        /// <summary>
+        /// Превращает условие в понятный человеческий язык
+        /// </summary>
+        /// <returns>Условие простыми словами</returns>
+        /// <example>
+        /// "x > 5" → "x больше 5"
+        /// "x > 0 && y < 10" → "(x больше 0) И (y меньше 10)"
+        /// </example>
         public abstract string ToHumanReadable();
-        
-        // Возвращает список всех переменных в условии
+
+        /// <summary>
+        /// Находит все переменные, которые используются в этом условии
+        /// </summary>
+        /// <returns>Список всех имен переменных в условии</returns>
+        /// <example>
+        /// Для "x > 5 И y < 10" вернет ["x", "y"]
+        /// </example>
         public abstract List<string> GetAllVariables();
     }
 
-    // Класс для условий сравнения (например: x > 5, y == 10)
+    /// <summary>
+    /// Класс для простых сравнений двух выражений
+    /// </summary>
+    /// <remarks>
+    /// Используется для сравнений типа: больше, меньше, равно, не равно и т.д.
+    /// Например: x > 5, y == 10, a + b <= 20
+    /// </remarks>
     public class ComparisonPredicate : Predicate
     {
-        // Левая часть сравнения (например: x в x > 5)
+        /// <summary>
+        /// Левая часть сравнения
+        /// </summary>
+        /// <example>В "x > 5" левая часть - переменная x</example>
         public Expression Left { get; }
-        
-        // Знак сравнения (>, <, ==, !=, >=, <=)
+
+        /// <summary>
+        /// Знак сравнения: >, <, ==, !=, >=, <=
+        /// </summary>
         public string Operator { get; }
-        
-        // Правая часть сравнения (например: 5 в x > 5)
+
+        /// <summary>
+        /// Правая часть сравнения
+        /// </summary>
+        /// <example>В "x > 5" правая часть - число 5</example>
         public Expression Right { get; }
 
+        /// <summary>
+        /// Создает новое условие сравнения
+        /// </summary>
+        /// <param name="left">Левая часть сравнения</param>
+        /// <param name="comparison">Знак сравнения</param>
+        /// <param name="right">Правая часть сравнения</param>
+        /// <exception cref="ArgumentException">Выбрасывается если какая-то часть отсутствует</exception>
         public ComparisonPredicate(Expression left, string comparison, Expression right)
         {
             if (left == null)
@@ -41,25 +91,38 @@ namespace lab2.Models
                 throw new ArgumentException("Знак сравнения не может быть пустым");
             if (right == null)
                 throw new ArgumentException("Правая часть не может быть пустой");
-                
+
             Left = left;
             Operator = comparison;
             Right = right;
         }
 
+        /// <summary>
+        /// Возвращает сравнение в виде текста
+        /// </summary>
+        /// <returns>Сравнение как текст, например "x > 5"</returns>
         public override string ToString()
         {
             return $"{Left} {Operator} {Right}";
         }
 
+        /// <summary>
+        /// Заменяет переменную в обеих частях сравнения
+        /// </summary>
+        /// <param name="variableName">Имя переменной для замены</param>
+        /// <param name="newValue">Выражение, которое подставится вместо переменной</param>
+        /// <returns>Новое сравнение с замененными переменными</returns>
         public override Predicate ReplaceVariable(string variableName, Expression newValue)
         {
-            // Заменяем переменную в обеих частях
             Expression newLeft = Left.ReplaceVariable(variableName, newValue);
             Expression newRight = Right.ReplaceVariable(variableName, newValue);
             return new ComparisonPredicate(newLeft, Operator, newRight);
         }
 
+        /// <summary>
+        /// Превращает сравнение в понятный человеческий текст
+        /// </summary>
+        /// <returns>Сравнение простыми словами на русском</returns>
         public override string ToHumanReadable()
         {
             string leftText = Left.ToString();
@@ -82,13 +145,17 @@ namespace lab2.Models
                 return $"{leftText} {Operator} {rightText}";
         }
 
+        /// <summary>
+        /// Находит все переменные в левой и правой части сравнения
+        /// </summary>
+        /// <returns>Список всех уникальных переменных из обеих частей</returns>
         public override List<string> GetAllVariables()
         {
             // Собираем переменные из обеих частей
             List<string> variables = new List<string>();
             variables.AddRange(Left.GetAllVariables());
             variables.AddRange(Right.GetAllVariables());
-            
+
             // Убираем повторы
             List<string> uniqueVariables = new List<string>();
             foreach (string variable in variables)
@@ -96,23 +163,44 @@ namespace lab2.Models
                 if (!uniqueVariables.Contains(variable))
                     uniqueVariables.Add(variable);
             }
-            
+
             return uniqueVariables;
         }
     }
 
-    // Класс для логических операций (например: x > 5 И y < 10)
+    /// <summary>
+    /// Класс для объединения двух условий логическими операциями
+    /// </summary>
+    /// <remarks>
+    /// Используется для создания сложных условий с помощью И/ИЛИ
+    /// Например: x > 5 И y < 10, a == 0 ИЛИ b != 1
+    /// </remarks>
     public class LogicalPredicate : Predicate
     {
-        // Левое условие
+        /// <summary>
+        /// Левое условие
+        /// </summary>
+        /// <example>В "x > 5 И y < 10" левое условие - "x > 5"</example>
         public Predicate Left { get; }
-        
-        // Логическая операция (И, ИЛИ)
+
+        /// <summary>
+        /// Логическая операция: И (&&, ∧) или ИЛИ (||, ∨)
+        /// </summary>
         public string Operator { get; }
-        
-        // Правое условие
+
+        /// <summary>
+        /// Правое условие
+        /// </summary>
+        /// <example>В "x > 5 И y < 10" правое условие - "y < 10"</example>
         public Predicate Right { get; }
 
+        /// <summary>
+        /// Создает новое логическое условие
+        /// </summary>
+        /// <param name="left">Левое условие</param>
+        /// <param name="logicalOperation">Логическая операция</param>
+        /// <param name="right">Правое условие</param>
+        /// <exception cref="ArgumentException">Выбрасывается если какое-то условие отсутствует</exception>
         public LogicalPredicate(Predicate left, string logicalOperation, Predicate right)
         {
             if (left == null)
@@ -121,25 +209,38 @@ namespace lab2.Models
                 throw new ArgumentException("Логическая операция не может быть пустой");
             if (right == null)
                 throw new ArgumentException("Правое условие не может быть пустым");
-                
+
             Left = left;
             Operator = logicalOperation;
             Right = right;
         }
 
+        /// <summary>
+        /// Возвращает логическое условие в виде текста в скобках
+        /// </summary>
+        /// <returns>Логическое условие как текст, например "(x > 5 ∧ y < 10)"</returns>
         public override string ToString()
         {
             return $"({Left} {Operator} {Right})";
         }
 
+        /// <summary>
+        /// Заменяет переменную в обоих условиях
+        /// </summary>
+        /// <param name="variableName">Имя переменной для замены</param>
+        /// <param name="newValue">Выражение, которое подставится вместо переменной</param>
+        /// <returns>Новое логическое условие с замененными переменными</returns>
         public override Predicate ReplaceVariable(string variableName, Expression newValue)
         {
-            // Заменяем переменную в обоих условиях
             Predicate newLeft = Left.ReplaceVariable(variableName, newValue);
             Predicate newRight = Right.ReplaceVariable(variableName, newValue);
             return new LogicalPredicate(newLeft, Operator, newRight);
         }
 
+        /// <summary>
+        /// Превращает логическое условие в понятный человеческий текст
+        /// </summary>
+        /// <returns>Логическое условие простыми словами на русском</returns>
         public override string ToHumanReadable()
         {
             string leftText = Left.ToHumanReadable();
@@ -154,13 +255,17 @@ namespace lab2.Models
                 return $"({leftText}) {Operator} ({rightText})";
         }
 
+        /// <summary>
+        /// Находит все переменные в левом и правом условии
+        /// </summary>
+        /// <returns>Список всех уникальных переменных из обоих условий</returns>
         public override List<string> GetAllVariables()
         {
             // Собираем переменные из обоих условий
             List<string> variables = new List<string>();
             variables.AddRange(Left.GetAllVariables());
             variables.AddRange(Right.GetAllVariables());
-            
+
             // Убираем повторы
             List<string> uniqueVariables = new List<string>();
             foreach (string variable in variables)
@@ -168,106 +273,192 @@ namespace lab2.Models
                 if (!uniqueVariables.Contains(variable))
                     uniqueVariables.Add(variable);
             }
-            
+
             return uniqueVariables;
         }
     }
 
-    // Класс для отрицания (например: НЕ(x > 5))
+    /// <summary>
+    /// Класс для отрицания условия
+    /// </summary>
+    /// <remarks>
+    /// Используется когда нужно проверить, что условие НЕ выполняется
+    /// Например: НЕ(x > 5) означает, что x не больше 5 (x <= 5)
+    /// </remarks>
     public class NotPredicate : Predicate
     {
-        // Условие, которое отрицаем
+        /// <summary>
+        /// Условие, которое мы отрицаем
+        /// </summary>
         public Predicate Operand { get; }
 
+        /// <summary>
+        /// Создает новое условие отрицания
+        /// </summary>
+        /// <param name="condition">Условие для отрицания</param>
+        /// <exception cref="ArgumentException">Выбрасывается если условие отсутствует</exception>
         public NotPredicate(Predicate condition)
         {
             if (condition == null)
                 throw new ArgumentException("Условие не может быть пустым");
-                
+
             Operand = condition;
         }
 
+        /// <summary>
+        /// Возвращает отрицание в виде текста
+        /// </summary>
+        /// <returns>Отрицание как текст, например "¬(x > 5)"</returns>
         public override string ToString()
         {
             return $"¬({Operand})";
         }
 
+        /// <summary>
+        /// Заменяет переменную внутри отрицаемого условия
+        /// </summary>
+        /// <param name="variableName">Имя переменной для замены</param>
+        /// <param name="newValue">Выражение, которое подставится вместо переменной</param>
+        /// <returns>Новое отрицание с замененной переменной</returns>
         public override Predicate ReplaceVariable(string variableName, Expression newValue)
         {
-            // Заменяем переменную внутри условия
             Predicate newOperand = Operand.ReplaceVariable(variableName, newValue);
             return new NotPredicate(newOperand);
         }
 
+        /// <summary>
+        /// Превращает отрицание в понятный человеческий текст
+        /// </summary>
+        /// <returns>Отрицание простыми словами на русском</returns>
         public override string ToHumanReadable()
         {
             return $"НЕ ({Operand.ToHumanReadable()})";
         }
 
+        /// <summary>
+        /// Находит все переменные внутри отрицаемого условия
+        /// </summary>
+        /// <returns>Список всех переменных из внутреннего условия</returns>
         public override List<string> GetAllVariables()
         {
             return Operand.GetAllVariables();
         }
     }
 
-    // Класс для условия "Истина" (всегда выполняется)
+    /// <summary>
+    /// Класс для условия, которое всегда выполняется
+    /// </summary>
+    /// <remarks>
+    /// Это как "да" или "всегда правда". Используется когда условие всегда должно проходить.
+    /// Например, в упрощенных проверках или как значение по умолчанию.
+    /// </remarks>
     public class TruePredicate : Predicate
     {
-        // Один экземпляр на всё приложение
+        /// <summary>
+        /// Единственный экземпляр этого класса на всю программу
+        /// </summary>
+        /// <remarks>
+        /// Используем один экземпляр, потому что все "истины" одинаковы
+        /// </remarks>
         public static readonly TruePredicate Instance = new TruePredicate();
 
+        // Скрытый конструктор, чтобы нельзя было создать новый экземпляр
         private TruePredicate() { }
 
+        /// <summary>
+        /// Возвращает "true" как текст
+        /// </summary>
+        /// <returns>Всегда "true"</returns>
         public override string ToString()
         {
             return "true";
         }
 
+        /// <summary>
+        /// Истина никогда не меняется при замене переменных
+        /// </summary>
+        /// <param name="variableName">Имя переменной (игнорируется)</param>
+        /// <param name="newValue">Новое значение (игнорируется)</param>
+        /// <returns>Всегда эту же истину</returns>
         public override Predicate ReplaceVariable(string variableName, Expression newValue)
         {
-            // Истина никогда не меняется
             return this;
         }
 
+        /// <summary>
+        /// Превращает истину в понятный человеческий текст
+        /// </summary>
+        /// <returns>Всегда "истина"</returns>
         public override string ToHumanReadable()
         {
             return "истина";
         }
 
+        /// <summary>
+        /// Истина не содержит переменных
+        /// </summary>
+        /// <returns>Всегда пустой список</returns>
         public override List<string> GetAllVariables()
         {
-            // Истина не содержит переменных
             return new List<string>();
         }
     }
 
-    // Класс для условия "Ложь" (никогда не выполняется)
+    /// <summary>
+    /// Класс для условия, которое никогда не выполняется
+    /// </summary>
+    /// <remarks>
+    /// Это как "нет" или "всегда ложь". Используется когда условие никогда не должно проходить.
+    /// Например, в упрощенных проверках или как значение по умолчанию.
+    /// </remarks>
     public class FalsePredicate : Predicate
     {
-        // Один экземпляр на всё приложение
+        /// <summary>
+        /// Единственный экземпляр этого класса на всю программу
+        /// </summary>
+        /// <remarks>
+        /// Используем один экземпляр, потому что все "лжи" одинаковы
+        /// </remarks>
         public static readonly FalsePredicate Instance = new FalsePredicate();
 
+        // Скрытый конструктор, чтобы нельзя было создать новый экземпляр
         private FalsePredicate() { }
 
+        /// <summary>
+        /// Возвращает "false" как текст
+        /// </summary>
+        /// <returns>Всегда "false"</returns>
         public override string ToString()
         {
             return "false";
         }
 
+        /// <summary>
+        /// Ложь никогда не меняется при замене переменных
+        /// </summary>
+        /// <param name="variableName">Имя переменной (игнорируется)</param>
+        /// <param name="newValue">Новое значение (игнорируется)</param>
+        /// <returns>Всегда эту же ложь</returns>
         public override Predicate ReplaceVariable(string variableName, Expression newValue)
         {
-            // Ложь никогда не меняется
             return this;
         }
 
+        /// <summary>
+        /// Превращает ложь в понятный человеческий текст
+        /// </summary>
+        /// <returns>Всегда "ложь"</returns>
         public override string ToHumanReadable()
         {
             return "ложь";
         }
 
+        /// <summary>
+        /// Ложь не содержит переменных
+        /// </summary>
+        /// <returns>Всегда пустой список</returns>
         public override List<string> GetAllVariables()
         {
-            // Ложь не содержит переменных
             return new List<string>();
         }
     }

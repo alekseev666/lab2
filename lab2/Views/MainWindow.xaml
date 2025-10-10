@@ -51,9 +51,15 @@
         <ScrollViewer Grid.Column="0"
                       VerticalScrollBarVisibility="Auto">
             <StackPanel Margin="10">
-                <Label Content="Конструктор фрагмента программы"
+                <Label Content="🎩 Калькулятор слабейших предусловий"
                        FontSize="16"
                        FontWeight="Bold" />
+                <TextBlock Text="Программа вычисляет условия, которые нужно выполнить в НАЧАЛЕ, чтобы в КОНЦЕ получить то, что мы хотим ✨"
+                           TextWrapping="Wrap"
+                           Margin="10,5"
+                           FontSize="12"
+                           Foreground="DarkBlue"
+                           FontStyle="Italic" />
                 <Label Content="Выберите пример:" />
                 <ComboBox ItemsSource="{Binding Presets}"
                           SelectedItem="{Binding SelectedPreset}"
@@ -69,25 +75,29 @@
                          TextWrapping="Wrap"
                          AcceptsReturn="True"
                          VerticalScrollBarVisibility="Auto" />
-                <TextBlock Text="Синтаксис: присваивание (x := expr), условие (if (B) { S1 } else { S2 }), последовательность (S1; S2)"
-                           FontSize="10"
-                           Foreground="Gray"
-                           TextWrapping="Wrap"
-                           Margin="5,0" />
+                <Border Background="#F0F8FF" BorderBrush="LightBlue" BorderThickness="1" CornerRadius="3" Margin="5,0">
+                    <TextBlock Text="📝 Примеры: x := 5, if (x > 0) { y := x } else { y := 0 }, x := x + 1; y := x * 2"
+                               FontSize="10"
+                               Foreground="DarkBlue"
+                               TextWrapping="Wrap"
+                               Padding="5" />
+                </Border>
                 <Label Content="Постусловие (цель):" />
                 <TextBox Text="{Binding PostconditionInput, UpdateSourceTrigger=PropertyChanged}"
                          Height="40"
                          TextWrapping="Wrap" />
 
-                <TextBlock Text="Примеры: x > 15, max > 100, y == x - 9 &amp;&amp; x > 15"
-                           FontSize="10"
-                           Foreground="Gray"
-                           TextWrapping="Wrap"
-                           Margin="5,0" />
-                <Label Content="Описание цели человеческим языком (опционально):" />
-                <TextBox Text="{Binding PostconditionHumanInput, UpdateSourceTrigger=PropertyChanged}"
-                         Height="40"
-                         TextWrapping="Wrap" />
+                <Border Background="#F0FFF0"
+                        BorderBrush="LightGreen"
+                        BorderThickness="1"
+                        CornerRadius="3"
+                        Margin="5,0">
+                    <TextBlock Text="🎯 Примеры: x > 15, max >= 100, y == 10, (x > 0 &amp;&amp; y > 0)"
+                               FontSize="10"
+                               Foreground="DarkGreen"
+                               TextWrapping="Wrap"
+                               Padding="5" />
+                </Border>
                 <StackPanel Orientation="Horizontal"
                             HorizontalAlignment="Center"
                             Margin="10">
@@ -98,6 +108,10 @@
                             Command="{Binding ShowTripleCommand}" />
                     <Button Content="Очистить"
                             Command="{Binding ClearCommand}" />
+                    <Button Content="❓ Справка"
+                            Command="{Binding ShowHelpCommand}"
+                            Background="LightSkyBlue"
+                            ToolTip="Показать подсказку как пользоваться программой" />
                 </StackPanel>
                 <ProgressBar IsIndeterminate="{Binding IsCalculating}"
                              Height="5"
@@ -179,13 +193,7 @@
                                    Foreground="DarkGreen" />
                     </StackPanel>
                 </Border>
-                <TextBlock Text="Введите код программы и постусловие, затем нажмите 'Рассчитать WP'"
-                           HorizontalAlignment="Center"
-                           VerticalAlignment="Center"
-                           FontStyle="Italic"
-                           Foreground="Gray"
-                           Margin="50"
-                           Visibility="{Binding CurrentResult, Converter={x:Static local:Converters.NullToVisibilityConverter}, ConverterParameter=Inverse}" />
+               
             </StackPanel>
         </ScrollViewer>
     </Grid>

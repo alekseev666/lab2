@@ -8,8 +8,26 @@ using System.Threading.Tasks;
 
 namespace lab2.Models
 {
+    /// <summary>
+    /// Парсер для преобразования текста в программу
+    /// </summary>
+    /// <remarks>
+    /// Этот класс умеет читать текст и создавать из него структуру программы.
+    /// Например, превращает текст "x := 5; y := x + 3" в объекты программы.
+    /// </remarks>
     public class Parser
     {
+        /// <summary>
+        /// Разбирает текст и создает оператор программы
+        /// </summary>
+        /// <param name="input">Текст программы для разбора</param>
+        /// <returns>Созданный оператор программы</returns>
+        /// <exception cref="ArgumentException">Выбрасывается если текст пустой или неправильный</exception>
+        /// <example>
+        /// ParseStatement("x := 5") → оператор присваивания
+        /// ParseStatement("if (x > 0) { y := 1 } else { y := 0 }") → условный оператор
+        /// ParseStatement("x := 1; y := 2") → последовательность операторов
+        /// </example>
         public static Statement ParseStatement(string input)
         {
             if (string.IsNullOrWhiteSpace(input))
@@ -46,6 +64,17 @@ namespace lab2.Models
             throw new ArgumentException($"Неизвестный тип оператора: {input}");
         }
 
+        /// <summary>
+        /// Разбирает условие (логическое выражение)
+        /// </summary>
+        /// <param name="input">Текст условия</param>
+        /// <returns>Созданное условие</returns>
+        /// <exception cref="ArgumentException">Выбрасывается если текст пустой или неправильный</exception>
+        /// <example>
+        /// ParsePredicate("x > 5") → сравнение
+        /// ParsePredicate("x > 0 && y < 10") → логическое "И"
+        /// ParsePredicate("(x == 0) || (y != 1)") → логическое "ИЛИ"
+        /// </example>
         public static Predicate ParsePredicate(string input)
         {
             if (string.IsNullOrWhiteSpace(input))
@@ -103,6 +132,19 @@ namespace lab2.Models
             throw new ArgumentException($"Не удалось разобрать предикат: {input}");
         }
 
+        /// <summary>
+        /// Разбирает математическое выражение
+        /// </summary>
+        /// <param name="input">Текст выражения</param>
+        /// <returns>Созданное выражение</returns>
+        /// <exception cref="ArgumentException">Выбрасывается если текст пустой или неправильный</exception>
+        /// <example>
+        /// ParseExpression("5") → число 5
+        /// ParseExpression("x") → переменная x
+        /// ParseExpression("x + 3") → сложение
+        /// ParseExpression("abs(-5)") → модуль числа
+        /// ParseExpression("(x + y) * 2") → сложение в скобках и умножение
+        /// </example>
         public static Expression ParseExpression(string input)
         {
             if (string.IsNullOrWhiteSpace(input))
@@ -177,6 +219,16 @@ namespace lab2.Models
             throw new ArgumentException($"Не удалось разобрать выражение: {input}");
         }
 
+        /// <summary>
+        /// Разбирает оператор присваивания
+        /// </summary>
+        /// <param name="input">Текст присваивания в формате "переменная := выражение"</param>
+        /// <returns>Оператор присваивания</returns>
+        /// <exception cref="ArgumentException">Выбрасывается если формат неправильный</exception>
+        /// <example>
+        /// ParseAssignment("x := 5") → присваивание x = 5
+        /// ParseAssignment("result := x + y * 2") → присваивание с вычислением
+        /// </example>
         private static Statement ParseAssignment(string input)
         {
             var index = input.IndexOf(":=");
@@ -190,6 +242,15 @@ namespace lab2.Models
             return new Assignment(variable, expression);
         }
 
+        /// <summary>
+        /// Разбирает условный оператор if-else
+        /// </summary>
+        /// <param name="input">Текст условия в формате "if (условие) { тогда } else { иначе }"</param>
+        /// <returns>Условный оператор</returns>
+        /// <exception cref="ArgumentException">Выбрасывается если формат неправильный</exception>
+        /// <example>
+        /// ParseConditional("if (x > 0) { y := 1 } else { y := 0 }")
+        /// </example>
         private static Statement ParseConditional(string input)
         {
             // Упрощенный парсер для if (condition) { statement1 } else { statement2 }
@@ -209,6 +270,17 @@ namespace lab2.Models
             return new Conditional(condition, thenBranch, elseBranch);
         }
 
+        /// <summary>
+        /// Разделяет строку на части по точкам с запятой, но только на верхнем уровне
+        /// </summary>
+        /// <remarks>
+        /// Игнорирует точки с запятой внутри скобок и фигурных скобок
+        /// </remarks>
+        /// <param name="input">Входная строка</param>
+        /// <returns>Список частей без точек с запятой</returns>
+        /// <example>
+        /// "x := 1; y := 2; if (z) { a; b }" → ["x := 1", "y := 2", "if (z) { a; b }"]
+        /// </example>
         private static List<string> SplitByTopLevelSemicolon(string input)
         {
             var parts = new List<string>();
@@ -239,6 +311,18 @@ namespace lab2.Models
             return parts;
         }
 
+        /// <summary>
+        /// Разделяет логическое выражение на части по логическому оператору
+        /// </summary>
+        /// <remarks>
+        /// Ищет оператор только на верхнем уровне (вне скобок)
+        /// </remarks>
+        /// <param name="input">Логическое выражение</param>
+        /// <param name="op">Логический оператор ("&&" или "||")</param>
+        /// <returns>Массив из двух частей или одна часть если оператор не найден</returns>
+        /// <example>
+        /// SplitByTopLevelLogicalOperator("x > 0 && y < 10", "&&") → ["x > 0", "y < 10"]
+        /// </example>
         private static string[] SplitByTopLevelLogicalOperator(string input, string op)
         {
             var depth = 0;
@@ -256,6 +340,19 @@ namespace lab2.Models
             return new[] { input };
         }
 
+        /// <summary>
+        /// Находит оператор на верхнем уровне в выражении
+        /// </summary>
+        /// <remarks>
+        /// Ищет справа налево для правильной ассоциативности операций
+        /// Игнорирует операторы внутри скобок
+        /// </remarks>
+        /// <param name="input">Математическое выражение</param>
+        /// <param name="op">Оператор (+, -, *, /)</param>
+        /// <returns>Позиция оператора или -1 если не найден</returns>
+        /// <example>
+        /// FindTopLevelOperator("x + y * z", "+") → позиция символа '+'
+        /// </example>
         private static int FindTopLevelOperator(string input, string op)
         {
             var depth = 0;
@@ -274,6 +371,15 @@ namespace lab2.Models
             return -1;
         }
 
+        /// <summary>
+        /// Проверяет правильно ли расставлены скобки в выражении
+        /// </summary>
+        /// <param name="input">Выражение для проверки</param>
+        /// <returns>True если скобки сбалансированы, иначе False</returns>
+        /// <example>
+        /// IsBalanced("(a + (b * c))") → true
+        /// IsBalanced("(a + b))") → false
+        /// </example>
         private static bool IsBalanced(string input)
         {
             var depth = 0;

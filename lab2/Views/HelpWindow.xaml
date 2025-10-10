@@ -1,0 +1,162 @@
+﻿<Window x:Class="lab2.Views.HelpWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Справка - Калькулятор слабейших предусловий" 
+        Height="600" Width="800"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="CanResize">
+    
+    <Window.Resources>
+        <Style TargetType="TextBlock">
+            <Setter Property="TextWrapping" Value="Wrap"/>
+            <Setter Property="Margin" Value="10,5"/>
+        </Style>
+        <Style TargetType="Border">
+            <Setter Property="BorderBrush" Value="LightGray"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="5"/>
+            <Setter Property="Padding" Value="10"/>
+            <Setter Property="Margin" Value="10,5"/>
+        </Style>
+    </Window.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="20">
+     
+            <TextBlock FontSize="20" FontWeight="Bold" TextAlignment="Center" Margin="10,10,10,20">
+                📚 СПРАВКА: Калькулятор слабейших предусловий
+            </TextBlock>
+
+            <Border Background="LightBlue">
+                <StackPanel>
+                    <TextBlock FontSize="16"
+                               FontWeight="Bold">🤔 Что это за программа?</TextBlock>
+                    <TextBlock>
+                        Эта программа помогает вычислять <Bold>слабейшие предусловия (Weakest Preconditions)</Bold> для простых программ.
+                        <LineBreak /><LineBreak />
+                        <Bold>Слабейшее предусловие (WP)</Bold> - это самое "слабое" (наименее ограничительное) условие, которое должно выполняться ДО выполнения программы, чтобы ПОСЛЕ выполнения программы было выполнено нужное нам постусловие.
+                        <LineBreak /><LineBreak />
+                        Простыми словами: "Какие условия должны быть выполнены в начале, чтобы в конце получить то, что мы хотим?"
+                    </TextBlock>
+                </StackPanel>
+            </Border>
+            <Border Background="LightGreen">
+                <StackPanel>
+                    <TextBlock FontSize="16"
+                               FontWeight="Bold">📋 Как пользоваться программой?</TextBlock>
+                    <TextBlock>
+                        <Bold>1. Выберите пример</Bold> из выпадающего списка (или создайте свой)
+                        <LineBreak />
+                        <Bold>2. Введите код программы</Bold> в левое поле (без циклов!)
+                        <LineBreak />
+                        <Bold>3. Введите постусловие</Bold> - что должно быть выполнено в конце
+                        <LineBreak />
+                        <Bold>4. Нажмите "Рассчитать WP"</Bold>
+                        <LineBreak />
+                        <Bold>5. Изучите результат</Bold> в правой части окна
+                        <LineBreak />
+                        <Bold>6. Нажмите "Показать триаду"</Bold> для итогового результата
+                    </TextBlock>
+                </StackPanel>
+            </Border>
+            <Border Background="LightYellow">
+                <StackPanel>
+                    <TextBlock FontSize="16"
+                               FontWeight="Bold">📝 Синтаксис программ:</TextBlock>
+                    <TextBlock>
+                        <Bold>• Присваивание:</Bold> x := 5  или  max := x + y
+                        <LineBreak />
+                        <Bold>• Условие:</Bold> if (x > 0) { y := x } else { y := -x }
+                        <LineBreak />
+                        <Bold>• Последовательность:</Bold> x := x + 1; y := x * 2
+                        <LineBreak /><LineBreak />
+                        <Bold>Операции в выражениях:</Bold>
+                        <LineBreak />
+                        • Сложение, вычитание: +, -
+                        <LineBreak />
+                        • Умножение, деление: *, /
+                        <LineBreak />
+                        • Скобки: ( )
+                    </TextBlock>
+                </StackPanel>
+            </Border>
+            <Border Background="Lavender">
+                <StackPanel>
+                    <TextBlock FontSize="16"
+                               FontWeight="Bold">🎯 Синтаксис постусловий:</TextBlock>
+                    <TextBlock>
+                        <Bold>• Сравнения:</Bold> x > 5, y == 10, max >= 100
+                        <LineBreak />
+                        <Bold>• Логические операции:</Bold>
+                        <LineBreak />
+                        - И (оба условия): x > 0 &amp;&amp; y > 0
+                        <LineBreak />
+                        - ИЛИ (одно из условий): x > 10 || y > 10
+                        <LineBreak /><LineBreak />
+                        <Bold>Знаки сравнения:</Bold>
+                        <LineBreak />
+                        • > (больше), &lt; (меньше)
+                        <LineBreak />
+                        • >= (больше или равно), &lt;= (меньше или равно)  
+                        <LineBreak />
+                        • == (равно), != (не равно)
+                    </TextBlock>
+                </StackPanel>
+            </Border>
+            <Border Background="LightCyan">
+                <StackPanel>
+                    <TextBlock FontSize="16"
+                               FontWeight="Bold">💡 Примеры:</TextBlock>
+                    <TextBlock FontFamily="Consolas"
+                               Background="White"
+                               Padding="10">
+                        <Bold>Пример 1: Простое присваивание</Bold>
+                        <LineBreak />
+                        Программа: x := x + 10
+                        <LineBreak />
+                        Постусловие: x > 15  
+                        <LineBreak />
+                        Результат: x + 10 > 15  (то есть x > 5)
+                        <LineBreak /><LineBreak />
+                        
+                        <Bold>Пример 2: Условие</Bold>
+                        <LineBreak />
+                        Программа: if (x >= 0) { y := x } else { y := -x }
+                        <LineBreak />
+                        Постусловие: y > 10
+                        <LineBreak />
+                        Результат: (x >= 0 И x > 10) ИЛИ (НЕ(x >= 0) И -x > 10)
+                        <LineBreak />
+                        Упрощенно: x > 10 ИЛИ x &lt; -10
+                    </TextBlock>
+                </StackPanel>
+            </Border>
+            <Border Background="MistyRose">
+                <StackPanel>
+                    <TextBlock FontSize="16"
+                               FontWeight="Bold">🔤 Обозначения в результатах:</TextBlock>
+                    <TextBlock>
+                        <Bold>• WP(S, R)</Bold> - слабейшее предусловие для оператора S и постусловия R
+                        <LineBreak />
+                        <Bold>• ∧</Bold> - логическое И (AND)
+                        <LineBreak />
+                        <Bold>• ∨</Bold> - логическое ИЛИ (OR)  
+                        <LineBreak />
+                        <Bold>• ¬</Bold> - логическое НЕ (NOT)
+                        <LineBreak />
+                        <Bold>• :=</Bold> - присваивание
+                        <LineBreak />
+                        <Bold>• R[x/e]</Bold> - замена переменной x на выражение e в условии R
+                        <LineBreak /><LineBreak />
+                        <Bold>Триада Хоара:</Bold> {P} S {Q}
+                        <LineBreak />
+                        P - предусловие, S - программа, Q - постусловие
+                    </TextBlock>
+                </StackPanel>
+            </Border>
+            <Button Content="Понятно!" HorizontalAlignment="Center" 
+                    Padding="20,10" Margin="20" FontSize="14"
+                    Click="CloseButton_Click"/>
+        </StackPanel>
+    </ScrollViewer>
+</Window>

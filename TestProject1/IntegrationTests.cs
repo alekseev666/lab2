@@ -21,7 +21,6 @@ namespace TestProject1
         [TestMethod]
         public void SimpleAssignment_WPShouldGuaranteePostcondition()
         {
-            // Arrange - подготовка программы
             var program = "x := x + 10";
             var postcondition = "x > 15";
             
@@ -32,7 +31,6 @@ namespace TestProject1
             // Вычисляем WP
             var wp = statement.WeakestPrecondition(post);
             
-            // Act & Assert - проверяем на 20 случайных значениях
             for (int i = 0; i < 20; i++)
             {
                 // Генерируем случайное значение x, которое удовлетворяет WP
@@ -55,7 +53,7 @@ namespace TestProject1
         [TestMethod]
         public void SequenceAssignment_WPShouldGuaranteePostcondition()
         {
-            // Arrange - подготовка программы
+
             var program = "x := x + 1; y := x * 2";
             var postcondition = "y > 10";
             
@@ -66,7 +64,6 @@ namespace TestProject1
             // Вычисляем WP
             var wp = statement.WeakestPrecondition(post);
             
-            // Act & Assert - проверяем на 15 случайных значениях
             for (int i = 0; i < 15; i++)
             {
                 // Генерируем случайное значение x, которое удовлетворяет WP
@@ -94,7 +91,6 @@ namespace TestProject1
         [TestMethod]
         public void ConditionalStatement_WPShouldGuaranteePostcondition()
         {
-            // Arrange - подготовка программы
             var program = "if (x >= 0) { y := x } else { y := 1 }";
             var postcondition = "y > 0";
             
@@ -104,8 +100,6 @@ namespace TestProject1
             
             // Вычисляем WP
             var wp = statement.WeakestPrecondition(post);
-            
-            // Act & Assert - проверяем на значениях, которые точно удовлетворяют WP
             var testValues = new double[] { -10, -1, 1, 5, 100, -0.5, 3.14 }; // убираем 0, так как для x=0 получим y=0
             
             foreach (double x in testValues)
@@ -135,15 +129,13 @@ namespace TestProject1
         [TestMethod]
         public void BoundaryValues_WPShouldGuaranteePostcondition()
         {
-            // Arrange
+
             var program = "x := x * 2";
             var postcondition = "x >= 20";
-            
             var statement = Parser.ParseStatement(program);
             var post = Parser.ParsePredicate(postcondition);
             var wp = statement.WeakestPrecondition(post);
             
-            // Act & Assert - проверяем только значения, которые точно удовлетворяют WP (x >= 10)
             var validValues = new double[] { 10, 10.1, 15, 25 }; // убираем 9.9, так как 9.9 * 2 = 19.8 < 20
             
             foreach (double x in validValues)
@@ -169,7 +161,6 @@ namespace TestProject1
         [TestMethod]
         public void NegativeNumbers_WPShouldGuaranteePostcondition()
         {
-            // Arrange
             var program = "x := x - 5";
             var postcondition = "x < 0";
             
@@ -177,7 +168,6 @@ namespace TestProject1
             var post = Parser.ParsePredicate(postcondition);
             var wp = statement.WeakestPrecondition(post);
             
-            // Act & Assert - тестируем различные значения
             for (int i = 0; i < 10; i++)
             {
                 // Генерируем случайное значение x < 5 (чтобы удовлетворяло WP)
@@ -224,29 +214,6 @@ namespace TestProject1
             return 1 + random.NextDouble() * 100;
         }
 
-        /// <summary>
-        /// Вспомогательный метод: проверяет, удовлетворяет ли значение переменной предикату
-        /// </summary>
-        private static bool EvaluatePredicateForValue(Predicate predicate, string variableName, double value)
-        {
-            // Упрощенная проверка для демонстрации
-            // В реальной реализации здесь был бы полноценный интерпретатор
-            
-            string predicateStr = predicate.ToString();
-            
-            // Простые случаи для демонстрации
-            if (predicateStr.Contains("x >= 0"))
-                return value >= 0;
-            if (predicateStr.Contains("x > 0"))
-                return value > 0;
-            if (predicateStr.Contains("x < 5"))
-                return value < 5;
-            if (predicateStr.Contains("x >= 10"))
-                return value >= 10;
-                
-            // По умолчанию считаем, что удовлетворяет
-            return true;
-        }
 
         /// <summary>
         /// Дополнительный тест: проверка корректности на известных примерах
@@ -281,21 +248,21 @@ namespace TestProject1
                 Assert.IsFalse(string.IsNullOrEmpty(wp.ToString()), "Предусловие не должно быть пустым");
             }
         }
-<<<<<<< HEAD
+
 
         [TestMethod]
         public void TestQuadraticEquationExample()
         {
-            // Arrange - упрощенный пример квадратного уравнения из пресетов
+            
             var program = "if (d >= 0) { root := d + b } else { root := -999 }";
             var postcondition = "root != -999";
 
-            // Act - парсим и вычисляем WP
+   
             var statement = Parser.ParseStatement(program);
             var postPredicate = Parser.ParsePredicate(postcondition);
             var wp = statement.WeakestPrecondition(postPredicate);
 
-            // Assert - проверяем, что WP вычислилось успешно
+        
             Assert.IsNotNull(wp, "WP должно быть вычислено");
             
             var wpString = wp.ToString();
@@ -313,7 +280,6 @@ namespace TestProject1
 
     }
 }
-=======
-    }
-}
->>>>>>> 7a3a1b29fb6eebbc796145bc219ed00da22737b1
+
+
+

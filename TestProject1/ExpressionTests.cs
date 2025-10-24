@@ -15,13 +15,8 @@ namespace TestProject1
         [TestMethod]
         public void Variable_ShouldReturnCorrectName()
         {
-            // Arrange (Подготовка)
             string expectedName = "x";
-
-            // Act (Выполнение)
             var variable = new Variable(expectedName);
-
-            // Assert (Проверка)
             Assert.AreEqual(expectedName, variable.Name, "Имя переменной должно совпадать с заданным");
             Assert.AreEqual(expectedName, variable.ToString(), "ToString() должен возвращать имя переменной");
         }
@@ -34,7 +29,6 @@ namespace TestProject1
         [TestMethod]
         public void BinaryOperation_ShouldReplaceVariableCorrectly()
         {
-            // Arrange (Подготовка)
             var x = new Variable("x");
             var ten = new Constant(10);
             var five = new Constant(5);
@@ -46,12 +40,9 @@ namespace TestProject1
             // Создаем выражение для замены: 5 + 2
             var replacementExpression = new BinaryOperation(five, "+", two);
 
-            // Act (Выполнение)
             // Заменяем x на (5 + 2)
             var result = originalExpression.ReplaceVariable("x", replacementExpression);
 
-            // Assert (Проверка)
-            Assert.IsInstanceOfType(result, typeof(BinaryOperation), "Результат должен быть бинарной операцией");
             
             var binaryResult = (BinaryOperation)result;
             Assert.AreEqual("+", binaryResult.Operator, "Оператор должен остаться +");
@@ -76,7 +67,6 @@ namespace TestProject1
         [TestMethod]
         public void ComplexExpression_ShouldReturnAllVariables()
         {
-            // Arrange (Подготовка)
             var x = new Variable("x");
             var y = new Variable("y");
             var z = new Variable("z");
@@ -86,10 +76,8 @@ namespace TestProject1
             var rightPart = new BinaryOperation(z, "-", x);         // z - x  
             var complexExpression = new BinaryOperation(leftPart, "*", rightPart); // (x + y) * (z - x)
 
-            // Act (Выполнение)
             var variables = complexExpression.GetAllVariables();
 
-            // Assert (Проверка)
             Assert.AreEqual(3, variables.Count, "Должно быть найдено 3 уникальные переменные");
             Assert.IsTrue(variables.Contains("x"), "Должна содержаться переменная x");
             Assert.IsTrue(variables.Contains("y"), "Должна содержаться переменная y");
@@ -103,12 +91,10 @@ namespace TestProject1
         [TestMethod]
         public void Constant_ShouldBehaveCorrectly()
         {
-            // Arrange (Подготовка)
             double value = 42.5;
             var constant = new Constant(value);
             var replacement = new Variable("x");
 
-            // Act & Assert (Выполнение и проверка)
             Assert.AreEqual(value, constant.Value, "Значение константы должно совпадать");
             Assert.AreEqual(value.ToString(), constant.ToString(), "ToString должен возвращать значение");
             

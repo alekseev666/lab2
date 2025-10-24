@@ -16,7 +16,7 @@ namespace TestProject1
         [TestMethod]
         public void Assignment_ShouldCalculateWeakestPreconditionCorrectly()
         {
-            // Arrange (Подготовка)
+
             // Создаем присваивание: x := x + 10
             var x = new Variable("x");
             var ten = new Constant(10);
@@ -27,10 +27,8 @@ namespace TestProject1
             var fifteen = new Constant(15);
             var postcondition = new ComparisonPredicate(x, ">", fifteen);
 
-            // Act (Выполнение)
+  
             var result = assignment.WeakestPrecondition(postcondition);
-
-            // Assert (Проверка)
             Assert.IsInstanceOfType(result, typeof(ComparisonPredicate), "Результат должен быть условием сравнения");
             
             var comparisonResult = (ComparisonPredicate)result;
@@ -60,7 +58,6 @@ namespace TestProject1
         [TestMethod]
         public void Conditional_ShouldCalculateWeakestPreconditionCorrectly()
         {
-            // Arrange (Подготовка)
             var x = new Variable("x");
             var y = new Variable("y");
             var zero = new Constant(0);
@@ -82,10 +79,10 @@ namespace TestProject1
             // Создаем постусловие: y > 10
             var postcondition = new ComparisonPredicate(y, ">", ten);
 
-            // Act (Выполнение)
+ 
             var result = conditional.WeakestPrecondition(postcondition);
 
-            // Assert (Проверка)
+ 
             Assert.IsInstanceOfType(result, typeof(LogicalPredicate), "Результат должен быть логическим предикатом");
             
             var logicalResult = (LogicalPredicate)result;
@@ -123,7 +120,7 @@ namespace TestProject1
         [TestMethod]
         public void Sequence_ShouldCalculateWeakestPreconditionCorrectly()
         {
-            // Arrange (Подготовка)
+  
             var x = new Variable("x");
             var y = new Variable("y");
             var one = new Constant(1);
@@ -145,10 +142,10 @@ namespace TestProject1
             // Создаем постусловие: y > 20
             var postcondition = new ComparisonPredicate(y, ">", twenty);
 
-            // Act (Выполнение)
+   
             var result = sequence.WeakestPrecondition(postcondition);
 
-            // Assert (Проверка)
+    
             Assert.IsInstanceOfType(result, typeof(ComparisonPredicate), "Результат должен быть условием сравнения");
             
             var comparisonResult = (ComparisonPredicate)result;
@@ -187,13 +184,12 @@ namespace TestProject1
         [TestMethod]
         public void Parser_ShouldParseSimpleAssignmentCorrectly()
         {
-            // Arrange (Подготовка)
+    
             string code = "x := 5";
 
-            // Act (Выполнение)
+    
             var result = Parser.ParseStatement(code);
 
-            // Assert (Проверка)
             Assert.IsInstanceOfType(result, typeof(Assignment), "Результат должен быть присваиванием");
             
             var assignment = (Assignment)result;
@@ -214,13 +210,12 @@ namespace TestProject1
         [TestMethod]
         public void Parser_ShouldParseSimpleComparisonCorrectly()
         {
-            // Arrange (Подготовка)
+          
             string predicate = "x > 10";
 
-            // Act (Выполнение)
+    
             var result = Parser.ParsePredicate(predicate);
 
-            // Assert (Проверка)
             Assert.IsInstanceOfType(result, typeof(ComparisonPredicate), "Результат должен быть условием сравнения");
             
             var comparison = (ComparisonPredicate)result;

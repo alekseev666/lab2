@@ -24,13 +24,13 @@
         <StackPanel Margin="20">
      
             <TextBlock FontSize="20" FontWeight="Bold" TextAlignment="Center" Margin="10,10,10,20">
-                📚 СПРАВКА: Калькулятор слабейших предусловий
+                СПРАВКА: Калькулятор слабейших предусловий
             </TextBlock>
 
             <Border Background="LightBlue">
                 <StackPanel>
                     <TextBlock FontSize="16"
-                               FontWeight="Bold">🤔 Что это за программа?</TextBlock>
+                               FontWeight="Bold">Что это за программа?</TextBlock>
                     <TextBlock>
                         Эта программа помогает вычислять <Bold>слабейшие предусловия (Weakest Preconditions)</Bold> для простых программ.
                         <LineBreak /><LineBreak />
@@ -43,7 +43,7 @@
             <Border Background="LightGreen">
                 <StackPanel>
                     <TextBlock FontSize="16"
-                               FontWeight="Bold">📋 Как пользоваться программой?</TextBlock>
+                               FontWeight="Bold">Как пользоваться программой?</TextBlock>
                     <TextBlock>
                         <Bold>1. Выберите пример</Bold> из выпадающего списка (или создайте свой)
                         <LineBreak />
@@ -62,7 +62,7 @@
             <Border Background="LightYellow">
                 <StackPanel>
                     <TextBlock FontSize="16"
-                               FontWeight="Bold">📝 Синтаксис программ:</TextBlock>
+                               FontWeight="Bold">Синтаксис программ:</TextBlock>
                     <TextBlock>
                         <Bold>• Присваивание:</Bold> x := 5  или  max := x + y
                         <LineBreak />
@@ -83,7 +83,7 @@
             <Border Background="Lavender">
                 <StackPanel>
                     <TextBlock FontSize="16"
-                               FontWeight="Bold">🎯 Синтаксис постусловий:</TextBlock>
+                               FontWeight="Bold">Синтаксис постусловий:</TextBlock>
                     <TextBlock>
                         <Bold>• Сравнения:</Bold> x > 5, y == 10, max >= 100
                         <LineBreak />
@@ -106,7 +106,7 @@
             <Border Background="LightCyan">
                 <StackPanel>
                     <TextBlock FontSize="16"
-                               FontWeight="Bold">💡 Примеры:</TextBlock>
+                               FontWeight="Bold">Примеры:</TextBlock>
                     <TextBlock FontFamily="Consolas"
                                Background="White"
                                Padding="10">
@@ -134,7 +134,7 @@
             <Border Background="MistyRose">
                 <StackPanel>
                     <TextBlock FontSize="16"
-                               FontWeight="Bold">🔤 Обозначения в результатах:</TextBlock>
+                               FontWeight="Bold">Обозначения в результатах:</TextBlock>
                     <TextBlock>
                         <Bold>• WP(S, R)</Bold> - слабейшее предусловие для оператора S и постусловия R
                         <LineBreak />

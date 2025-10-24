@@ -51,10 +51,10 @@
         <ScrollViewer Grid.Column="0"
                       VerticalScrollBarVisibility="Auto">
             <StackPanel Margin="10">
-                <Label Content="🎩 Калькулятор слабейших предусловий"
+                <Label Content="Калькулятор слабейших предусловий"
                        FontSize="16"
                        FontWeight="Bold" />
-                <TextBlock Text="Программа вычисляет условия, которые нужно выполнить в НАЧАЛЕ, чтобы в КОНЦЕ получить то, что мы хотим ✨"
+                <TextBlock Text="Программа вычисляет условия, которые нужно выполнить в НАЧАЛЕ, чтобы в КОНЦЕ получить то, что мы хотим"
                            TextWrapping="Wrap"
                            Margin="10,5"
                            FontSize="12"
@@ -76,7 +76,7 @@
                          AcceptsReturn="True"
                          VerticalScrollBarVisibility="Auto" />
                 <Border Background="#F0F8FF" BorderBrush="LightBlue" BorderThickness="1" CornerRadius="3" Margin="5,0">
-                    <TextBlock Text="📝 Примеры: x := 5, if (x > 0) { y := x } else { y := 0 }, x := x + 1; y := x * 2"
+                    <TextBlock Text="Примеры: x := 5, if (x > 0) { y := x } else { y := 0 }, x := x + 1; y := x * 2"
                                FontSize="10"
                                Foreground="DarkBlue"
                                TextWrapping="Wrap"
@@ -92,7 +92,7 @@
                         BorderThickness="1"
                         CornerRadius="3"
                         Margin="5,0">
-                    <TextBlock Text="🎯 Примеры: x > 15, max >= 100, y == 10, (x > 0 &amp;&amp; y > 0)"
+                    <TextBlock Text="Примеры: x > 15, max >= 100, y == 10, (x > 0 &amp;&amp; y > 0)"
                                FontSize="10"
                                Foreground="DarkGreen"
                                TextWrapping="Wrap"
@@ -108,7 +108,7 @@
                             Command="{Binding ShowTripleCommand}" />
                     <Button Content="Очистить"
                             Command="{Binding ClearCommand}" />
-                    <Button Content="❓ Справка"
+                    <Button Content="Справка"
                             Command="{Binding ShowHelpCommand}"
                             Background="LightSkyBlue"
                             ToolTip="Показать подсказку как пользоваться программой" />

@@ -135,6 +135,8 @@ dotnet test
 
 ## Как запустить
 
+Скачать git 
+
 Вариант 1: Через Visual Studio (рекомендуемый)
 1. Установка Visual Studio
 Скачайте Visual Studio 2022 Community. 

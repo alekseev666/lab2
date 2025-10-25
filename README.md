@@ -130,10 +130,37 @@ dotnet test
 - Максимальная сложность выражения: 10 уровней вложенности
 
 ## Как запустить
+Вариант 1: Через Visual Studio (рекомендуемый)
+1. Установка Visual Studio
+Скачайте Visual Studio 2022 Community
 
+При установке выберите рабочую нагрузку "Разработка классических приложений .NET"
+
+2. Открытие проекта в Visual Studio
+Клонируем репозиторий
 ```
 git clone https://github.com/alekseev666/lab2.git
 ```
+В Visual Studio:
+Запустите Visual Studio
+Выберите "Open a project or solution"
+Найдите файл lab2.sln в папке проекта и откройте его
+Дождитесь загрузки проекта и восстановления пакетов NuGet
+
+Запуск:
+Нажмите F5 или кнопку "Start" (зеленая стрелка)
+Или через меню: Debug → Start Debugging
+
+Вариант 2: Через Visual Studio Code
+Установите необходимые расширения:
+C# от Microsoft
+.NET Extension Pack
+
+Запуск:
+Откройте папку проекта в VS Code
+Нажмите Ctrl+Shift+P → "OmniSharp: Select Project"
+Выберите файл lab2.csproj
+Нажмите F5 для запуска
 
 ## Примеры использования
 

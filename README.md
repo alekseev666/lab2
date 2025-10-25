@@ -70,6 +70,10 @@ result > 20 || result < -5
 - Постусловие: `x > 15`
 - Результат WP: `(x + 10) > 15`, что означает `x > 5`
 
+
+## Архитектура проекта
+<img width="828" height="530" alt="image" src="https://github.com/user-attachments/assets/fec41be9-e3fd-4cf9-bc23-16a55c29ed59" />
+
 ## Автотесты
 
 Программа включает в себя два типа тестов:

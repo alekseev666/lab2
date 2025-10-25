@@ -133,26 +133,25 @@ dotnet test
 
 Вариант 1: Через Visual Studio (рекомендуемый)
 1. Установка Visual Studio
-Скачайте Visual Studio 2022 Community
-При установке выберите рабочую нагрузку "Разработка классических приложений .NET"
+Скачайте Visual Studio 2022 Community. 
+При установке выберите рабочую нагрузку "Разработка классических приложений .NET". 
 2. Клонирование репозитория
 ```
 git clone https://github.com/alekseev666/lab2.git
 ```
-Запустите Visual Studio
-Выберите "Open a project or solution"
-Найдите файл lab2.sln в папке проекта и откройте его
-Дождитесь загрузки проекта и восстановления пакетов NuGet
+Запустите Visual Studio. 
+Выберите "Open a project or solution". 
+Найдите файл lab2.sln в папке проекта и откройте его. 
+Дождитесь загрузки проекта и восстановления пакетов NuGet. 
 
 3. Запуск
-Нажмите F5 или кнопку "Start" (зеленая стрелка)
-Или через меню: Debug → Start Debugging
+Нажмите F5 или кнопку "Start" (зеленая стрелка) или через меню: Debug → Start Debugging. 
 
 Вариант 2: Через Visual Studio Code
-Откройте папку проекта в VS Code
-Нажмите Ctrl+Shift+P → "OmniSharp: Select Project"
-Выберите файл lab2.csproj
-Нажмите F5 для запуска
+Откройте папку проекта в VS Code. 
+Нажмите Ctrl+Shift+P → "OmniSharp: Select Project". 
+Выберите файл lab2.csproj. 
+Нажмите F5 для запуска. 
 
 ## Примеры использования
 

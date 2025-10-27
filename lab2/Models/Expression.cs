@@ -12,42 +12,11 @@ namespace lab2.Models
     /// </remarks>
     public abstract class Expression
     {
-        /// <summary>
-        /// Превращает выражение в текст, чтобы можно было его прочитать
-        /// </summary>
-        /// <returns>Выражение в виде текста, например "x + 5"</returns>
         public abstract override string ToString();
-
-        /// <summary>
-        /// Заменяет переменную на другое выражение
-        /// </summary>
-        /// <param name="variableName">Имя переменной, которую нужно заменить</param>
-        /// <param name="newValue">Новое выражение, которое подставится вместо переменной</param>
-        /// <returns>Новое выражение с замененной переменной</returns>
-        /// <example>
-        /// Было: x + 3, заменили x на (y * 2)
-        /// Стало: (y * 2) + 3
-        /// </example>
         public abstract Expression ReplaceVariable(string variableName, Expression newValue);
-
-        /// <summary>
-        /// Находит все переменные, которые есть в этом выражении
-        /// </summary>
-        /// <returns>Список имен всех переменных в выражении</returns>
-        /// <example>
-        /// Для выражения "x + y * z" вернет список: ["x", "y", "z"]
-        /// </example>
         public abstract List<string> GetAllVariables();
-
-        /// <summary>
-        /// Проверяет, можно ли вычислить это выражение
-        /// </summary>
-        /// <param name="variableValues">Словарь со значениями переменных: имя переменной → её значение</param>
-        /// <returns>True если выражение можно вычислить, False если нельзя</returns>
-        /// <remarks>
-        /// Проверяет, что все переменные есть в словаре и нет деления на ноль
-        /// </remarks>
         public abstract bool CanCalculate(Dictionary<string, double> variableValues);
+        public abstract Expression Simplify();
     }
 
     /// <summary>
@@ -84,6 +53,11 @@ namespace lab2.Models
         public override string ToString()
         {
             return Name;
+        }
+
+        public override Expression Simplify()
+        {
+            return this;
         }
 
         /// <summary>
@@ -153,6 +127,11 @@ namespace lab2.Models
         public override string ToString()
         {
             return Value.ToString();
+        }
+
+        public override Expression Simplify()
+        {
+            return this;
         }
 
         /// <summary>
@@ -240,6 +219,45 @@ namespace lab2.Models
         public override string ToString()
         {
             return $"({Left} {Operator} {Right})";
+        }
+
+        public override Expression Simplify()
+        {
+            var l = Left.Simplify();
+            var r = Right.Simplify();
+            if (l is Constant lc && r is Constant rc)
+            {
+                double val = Operator switch
+                {
+                    "+" => lc.Value + rc.Value,
+                    "-" => lc.Value - rc.Value,
+                    "*" => lc.Value * rc.Value,
+                    "/" => rc.Value == 0 ? double.NaN : lc.Value / rc.Value,
+                    _ => double.NaN
+                };
+                if (!double.IsNaN(val)) return new Constant(val);
+            }
+            // Algebraic identities
+            if (Operator == "+")
+            {
+                if (l is Constant lc2 && lc2.Value == 0) return r;
+                if (r is Constant rc2 && rc2.Value == 0) return l;
+            }
+            if (Operator == "-")
+            {
+                if (r is Constant rc3 && rc3.Value == 0) return l;
+            }
+            if (Operator == "*")
+            {
+                if ((l is Constant lc3 && lc3.Value == 0) || (r is Constant rc4 && rc4.Value == 0)) return new Constant(0);
+                if (l is Constant lc4 && lc4.Value == 1) return r;
+                if (r is Constant rc5 && rc5.Value == 1) return l;
+            }
+            if (Operator == "/")
+            {
+                if (r is Constant rc6 && rc6.Value == 1) return l;
+            }
+            return new BinaryOperation(l, Operator, r);
         }
 
         /// <summary>
@@ -339,6 +357,20 @@ namespace lab2.Models
         public override string ToString()
         {
             return $"{Operator}({Operand})";
+        }
+
+        public override Expression Simplify()
+        {
+            var op = Operand.Simplify();
+            if (Operator == "-")
+            {
+                if (op is Constant c) return new Constant(-c.Value);
+            }
+            if (Operator == "abs")
+            {
+                if (op is Constant c2) return new Constant(Math.Abs(c2.Value));
+            }
+            return new UnaryOperation(Operator, op);
         }
 
         /// <summary>

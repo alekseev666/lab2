@@ -107,16 +107,12 @@ namespace lab2.Models
         /// </example>
         public override Predicate WeakestPrecondition(Predicate postcondition)
         {
-            // wp(x := e, R) = R[x/e] ∧ "e определено"
-            var substituted = postcondition.ReplaceVariable(Variable, Expression);
-
-            // Добавляем требования определенности выражения
+            var substituted = postcondition.ReplaceVariable(Variable, Expression).Simplify();
             var definednessConditions = GetDefinednessConditions(Expression);
-
-            if (definednessConditions == null)
-                return substituted;
-
-            return new LogicalPredicate(definednessConditions, "∧", substituted);
+            var result = definednessConditions == null
+                ? substituted
+                : new LogicalPredicate(definednessConditions, "∧", substituted);
+            return result.Simplify();
         }
 
         /// <summary>
@@ -248,14 +244,11 @@ namespace lab2.Models
         /// </example>
         public override Predicate WeakestPrecondition(Predicate postcondition)
         {
-            // wp(if B then S1 else S2, R) = (B ∧ wp(S1,R)) ∨ (¬B ∧ wp(S2,R))
-            var thenWp = ThenBranch.WeakestPrecondition(postcondition);
-            var elseWp = ElseBranch.WeakestPrecondition(postcondition);
-
+            var thenWp = ThenBranch.WeakestPrecondition(postcondition).Simplify();
+            var elseWp = ElseBranch.WeakestPrecondition(postcondition).Simplify();
             var thenCondition = new LogicalPredicate(Condition, "∧", thenWp);
             var elseCondition = new LogicalPredicate(new NotPredicate(Condition), "∧", elseWp);
-
-            return new LogicalPredicate(thenCondition, "∨", elseCondition);
+            return new LogicalPredicate(thenCondition, "∨", elseCondition).Simplify();
         }
     }
 
@@ -323,16 +316,12 @@ namespace lab2.Models
         /// </example>
         public override Predicate WeakestPrecondition(Predicate postcondition)
         {
-            // wp(S1; S2; ...; Sn, R) = wp(S1, wp(S2, wp(..., wp(Sn, R))))
-            // Обрабатываем с конца
-            var currentPredicate = postcondition;
-
+            var currentPredicate = postcondition.Simplify();
             for (int i = Statements.Count - 1; i >= 0; i--)
             {
-                currentPredicate = Statements[i].WeakestPrecondition(currentPredicate);
+                currentPredicate = Statements[i].WeakestPrecondition(currentPredicate).Simplify();
             }
-
-            return currentPredicate;
+            return currentPredicate.Simplify();
         }
     }
 }

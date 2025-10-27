@@ -12,42 +12,11 @@ namespace lab2.Models
     /// </remarks>
     public abstract class Predicate
     {
-        /// <summary>
-        /// Превращает условие в текст, который можно снова разобрать
-        /// </summary>
-        /// <returns>Условие в виде текста</returns>
         public abstract override string ToString();
-
-        /// <summary>
-        /// Заменяет переменную на другое выражение в условии
-        /// </summary>
-        /// <param name="variableName">Имя переменной для замены</param>
-        /// <param name="newValue">Выражение, которое подставится вместо переменной</param>
-        /// <returns>Новое условие с замененной переменной</returns>
-        /// <example>
-        /// Было: x > 5, заменили x на (y + 2)
-        /// Стало: (y + 2) > 5
-        /// </example>
         public abstract Predicate ReplaceVariable(string variableName, Expression newValue);
-
-        /// <summary>
-        /// Превращает условие в понятный человеческий язык
-        /// </summary>
-        /// <returns>Условие простыми словами</returns>
-        /// <example>
-        /// "x > 5" → "x больше 5"
-        /// "x > 0 && y < 10" → "(x больше 0) И (y меньше 10)"
-        /// </example>
         public abstract string ToHumanReadable();
-
-        /// <summary>
-        /// Находит все переменные, которые используются в этом условии
-        /// </summary>
-        /// <returns>Список всех имен переменных в условии</returns>
-        /// <example>
-        /// Для "x > 5 И y < 10" вернет ["x", "y"]
-        /// </example>
         public abstract List<string> GetAllVariables();
+        public abstract Predicate Simplify();
     }
 
     /// <summary>
@@ -104,6 +73,27 @@ namespace lab2.Models
         public override string ToString()
         {
             return $"{Left} {Operator} {Right}";
+        }
+
+        public override Predicate Simplify()
+        {
+            var l = Left.Simplify();
+            var r = Right.Simplify();
+            if (l is Constant lc && r is Constant rc)
+            {
+                bool res = Operator switch
+                {
+                    ">" => lc.Value > rc.Value,
+                    "<" => lc.Value < rc.Value,
+                    ">=" => lc.Value >= rc.Value,
+                    "<=" => lc.Value <= rc.Value,
+                    "==" => Math.Abs(lc.Value - rc.Value) < 1e-9,
+                    "!=" => Math.Abs(lc.Value - rc.Value) >= 1e-9,
+                    _ => false
+                };
+                return res ? TruePredicate.Instance : FalsePredicate.Instance;
+            }
+            return new ComparisonPredicate(l, Operator, r);
         }
 
         /// <summary>
@@ -224,6 +214,28 @@ namespace lab2.Models
             return $"({Left} {Operator} {Right})";
         }
 
+        public override Predicate Simplify()
+        {
+            var l = Left.Simplify();
+            var r = Right.Simplify();
+            bool isAnd = Operator == "&&" || Operator == "∧";
+            bool isOr = Operator == "||" || Operator == "∨";
+
+            if (isAnd)
+            {
+                if (l is FalsePredicate || r is FalsePredicate) return FalsePredicate.Instance;
+                if (l is TruePredicate) return r;
+                if (r is TruePredicate) return l;
+            }
+            if (isOr)
+            {
+                if (l is TruePredicate || r is TruePredicate) return TruePredicate.Instance;
+                if (l is FalsePredicate) return r;
+                if (r is FalsePredicate) return l;
+            }
+            return new LogicalPredicate(l, Operator, r);
+        }
+
         /// <summary>
         /// Заменяет переменную в обоих условиях
         /// </summary>
@@ -314,6 +326,15 @@ namespace lab2.Models
             return $"¬({Operand})";
         }
 
+        public override Predicate Simplify()
+        {
+            var inner = Operand.Simplify();
+            if (inner is TruePredicate) return FalsePredicate.Instance;
+            if (inner is FalsePredicate) return TruePredicate.Instance;
+            if (inner is NotPredicate notInner) return notInner.Operand.Simplify();
+            return new NotPredicate(inner);
+        }
+
         /// <summary>
         /// Заменяет переменную внутри отрицаемого условия
         /// </summary>
@@ -385,6 +406,11 @@ namespace lab2.Models
             return this;
         }
 
+        public override Predicate Simplify()
+        {
+            return this;
+        }
+
         /// <summary>
         /// Превращает истину в понятный человеческий текст
         /// </summary>
@@ -440,6 +466,11 @@ namespace lab2.Models
         /// <param name="newValue">Новое значение (игнорируется)</param>
         /// <returns>Всегда эту же ложь</returns>
         public override Predicate ReplaceVariable(string variableName, Expression newValue)
+        {
+            return this;
+        }
+
+        public override Predicate Simplify()
         {
             return this;
         }

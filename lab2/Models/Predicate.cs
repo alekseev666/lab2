@@ -79,6 +79,7 @@ namespace lab2.Models
         {
             var l = Left.Simplify();
             var r = Right.Simplify();
+            // 1) Если обе стороны — константы, вычисляем сразу
             if (l is Constant lc && r is Constant rc)
             {
                 bool res = Operator switch
@@ -93,6 +94,70 @@ namespace lab2.Models
                 };
                 return res ? TruePredicate.Instance : FalsePredicate.Instance;
             }
+
+            // Локальная функция структурного сравнения выражений (без алгебры)
+            bool ExprEqual(Expression a, Expression b)
+            {
+                if (ReferenceEquals(a, b)) return true;
+                if (a == null || b == null) return false;
+                if (a.GetType() != b.GetType()) return false;
+                switch (a)
+                {
+                    case Constant ca when b is Constant cb:
+                        return Math.Abs(ca.Value - cb.Value) < 1e-9;
+                    case Variable va when b is Variable vb:
+                        return va.Name == vb.Name;
+                    case BinaryOperation ba when b is BinaryOperation bb:
+                        return ba.Operator == bb.Operator && ExprEqual(ba.Left, bb.Left) && ExprEqual(ba.Right, bb.Right);
+                    case UnaryOperation ua when b is UnaryOperation ub:
+                        return ua.Operator == ub.Operator && ExprEqual(ua.Operand, ub.Operand);
+                    default:
+                        return false;
+                }
+            }
+
+            // 2) Если обе стороны структурно равны: упрощаем сравнители сразу
+            if (ExprEqual(l, r))
+            {
+                return Operator switch
+                {
+                    "==" => TruePredicate.Instance,
+                    "!=" => FalsePredicate.Instance,
+                    ">" => FalsePredicate.Instance,
+                    "<" => FalsePredicate.Instance,
+                    ">=" => TruePredicate.Instance,
+                    "<=" => TruePredicate.Instance,
+                    _ => new ComparisonPredicate(l, Operator, r)
+                };
+            }
+
+            // 3) Пытаемся сократить одинаковые линейные части: (E + c1) op (E + c2) → c1 op c2
+            (Expression exprBase, double c) DecomposeToBasePlusConst(Expression e)
+            {
+                if (e is BinaryOperation b)
+                {
+                    if (b.Operator == "+")
+                    {
+                        if (b.Left is Constant c1) return (b.Right, c1.Value);
+                        if (b.Right is Constant c2) return (b.Left, c2.Value);
+                    }
+                    else if (b.Operator == "-")
+                    {
+                        if (b.Right is Constant cR) return (b.Left, -cR.Value);
+                    }
+                }
+                return (e, 0.0);
+            }
+
+            var (baseL, cL) = DecomposeToBasePlusConst(l);
+            var (baseR, cR) = DecomposeToBasePlusConst(r);
+            if (ExprEqual(baseL, baseR))
+            {
+                // Сравниваем только константы — даст константный предикат
+                return new ComparisonPredicate(new Constant(cL), Operator, new Constant(cR)).Simplify();
+            }
+
+            // 4) По умолчанию — без доп.упрощений
             return new ComparisonPredicate(l, Operator, r);
         }
 

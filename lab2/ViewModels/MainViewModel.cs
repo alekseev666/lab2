@@ -101,6 +101,7 @@ namespace lab2.ViewModels
                 var statement = Parser.ParseStatement(CodeInput);
                 var postcondition = Parser.ParsePredicate(PostconditionInput).Simplify();
 
+
                 result.Steps.Add(new WpCalculationStep(
                     ++_stepCounter,
                     "Исходное постусловие",
@@ -119,13 +120,26 @@ namespace lab2.ViewModels
                 var finalPrecondition = CalculateWpWithTrace(statement, postcondition, result.Steps).Simplify();
                 result.FinalPrecondition = finalPrecondition;
 
-                result.Steps.Add(new WpCalculationStep(
-                    ++_stepCounter,
-                    "Итоговое предусловие",
-                    finalPrecondition.ToString(),
-                    "",
-                    $"Должно выполняться ДО программы: {finalPrecondition.ToHumanReadable()}"
-                ));
+                if (finalPrecondition is FalsePredicate)
+                {
+                    result.Steps.Add(new WpCalculationStep(
+                        ++_stepCounter,
+                        "Итог: постусловие недостижимо",
+                        finalPrecondition.ToString(),
+                        "",
+                        "Цель недостижима (wp = ложь)"
+                    ));
+                }
+                else
+                {
+                    result.Steps.Add(new WpCalculationStep(
+                        ++_stepCounter,
+                        "Итоговое предусловие",
+                        finalPrecondition.ToString(),
+                        "",
+                        $"Должно выполняться ДО программы: {finalPrecondition.ToHumanReadable()}"
+                    ));
+                }
 
                 CurrentResult = result;
             }
@@ -150,7 +164,7 @@ namespace lab2.ViewModels
                         $"{assign.Variable} := {assign.Expression}",
                         postcondition.ToString(),
                         result.ToString(),
-                        $"Заменяем '{assign.Variable}' → '{assign.Expression}'"
+                        $"Заменяем '{assign.Variable}' -> '{assign.Expression}'"
                     ));
                     return result;
 

@@ -44,157 +44,156 @@
     </Window.Resources>
 
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
-        <ScrollViewer Grid.Column="0"
-                      VerticalScrollBarVisibility="Auto">
-            <StackPanel Margin="10">
-                <Label Content="Калькулятор слабейших предусловий"
-                       FontSize="16"
-                       FontWeight="Bold" />
-                <TextBlock Text="Программа вычисляет условия, которые нужно выполнить в НАЧАЛЕ, чтобы в КОНЦЕ получить то, что мы хотим"
-                           TextWrapping="Wrap"
-                           Margin="10,5"
-                           FontSize="12"
-                           Foreground="DarkBlue"
-                           FontStyle="Italic" />
-                <Label Content="Выберите пример:" />
-                <ComboBox ItemsSource="{Binding Presets}"
-                          SelectedItem="{Binding SelectedPreset}"
-                          DisplayMemberPath="Name" />
-                <TextBlock Text="{Binding SelectedPreset.Description}"
-                           TextWrapping="Wrap"
-                           Margin="5"
-                           FontStyle="Italic"
-                           Visibility="{Binding SelectedPreset, Converter={x:Static local:Converters.NullToVisibilityConverter}}" />
-                <Label Content="Код программы (без циклов):" />
-                <TextBox Text="{Binding CodeInput, UpdateSourceTrigger=PropertyChanged}"
-                         Height="100"
-                         TextWrapping="Wrap"
-                         AcceptsReturn="True"
-                         VerticalScrollBarVisibility="Auto" />
-                <Border Background="#F0F8FF" BorderBrush="LightBlue" BorderThickness="1" CornerRadius="3" Margin="5,0">
-                    <TextBlock Text="Примеры: x := 5, if (x > 0) { y := x } else { y := 0 }, x := x + 1; y := x * 2"
-                               FontSize="10"
-                               Foreground="DarkBlue"
-                               TextWrapping="Wrap"
-                               Padding="5" />
-                </Border>
-                <Label Content="Постусловие (цель):" />
-                <TextBox Text="{Binding PostconditionInput, UpdateSourceTrigger=PropertyChanged}"
-                         Height="40"
-                         TextWrapping="Wrap" />
-
-                <Border Background="#F0FFF0"
-                        BorderBrush="LightGreen"
-                        BorderThickness="1"
-                        CornerRadius="3"
-                        Margin="5,0">
-                    <TextBlock Text="Примеры: x > 15, max >= 100, y == 10, (x > 0 &amp;&amp; y > 0)"
-                               FontSize="10"
-                               Foreground="DarkGreen"
-                               TextWrapping="Wrap"
-                               Padding="5" />
-                </Border>
-                <StackPanel Orientation="Horizontal"
-                            HorizontalAlignment="Center"
-                            Margin="10">
-                    <Button Content="Рассчитать WP"
-                            Command="{Binding CalculateWpCommand}"
-                            IsEnabled="{Binding IsCalculating, Converter={x:Static local:Converters.InverseBoolConverter}}" />
-                    <Button Content="Показать триаду"
-                            Command="{Binding ShowTripleCommand}" />
-                    <Button Content="Очистить"
-                            Command="{Binding ClearCommand}" />
-                    <Button Content="Справка"
-                            Command="{Binding ShowHelpCommand}"
-                            Background="LightSkyBlue"
-                            ToolTip="Показать подсказку как пользоваться программой" />
-                </StackPanel>
-                <ProgressBar IsIndeterminate="{Binding IsCalculating}"
-                             Height="5"
-                             Margin="5"
-                             Visibility="{Binding IsCalculating, Converter={x:Static local:Converters.BoolToVisibilityConverter}}" />
-            </StackPanel>
-        </ScrollViewer>
-        <ScrollViewer Grid.Column="1"
-                      VerticalScrollBarVisibility="Auto">
-            <StackPanel Margin="10">
-                <Label Content="Результат вычисления WP"
-                       FontSize="16"
-                       FontWeight="Bold" />
-                <Border BorderBrush="Red"
-                        BorderThickness="2"
-                        Margin="5"
-                        Padding="10"
-                        Visibility="{Binding CurrentResult.HasErrors, Converter={x:Static local:Converters.BoolToVisibilityConverter}}">
-                    <StackPanel>
-                        <Label Content="Ошибка:"
-                               Foreground="Red" />
-                        <TextBlock Text="{Binding CurrentResult.ErrorMessage}"
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <ScrollViewer Grid.Column="0"
+                              VerticalScrollBarVisibility="Auto">
+                    <StackPanel Margin="10">
+                        <Label Content="Калькулятор слабейших предусловий"
+                               FontSize="16"
+                               FontWeight="Bold" />
+                        <TextBlock Text="Программа вычисляет условия, которые нужно выполнить в НАЧАЛЕ, чтобы в КОНЦЕ получить то, что мы хотим"
                                    TextWrapping="Wrap"
-                                   Foreground="Red" />
-                    </StackPanel>
-                </Border>
-                <ItemsControl ItemsSource="{Binding CurrentResult.Steps}"
-                              Visibility="{Binding CurrentResult.HasErrors, Converter={x:Static local:Converters.InverseBoolToVisibilityConverter}}">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <Border BorderBrush="LightBlue"
-                                    BorderThickness="1"
-                                    Margin="5"
-                                    Padding="10"
-                                    Background="AliceBlue">
-                                <StackPanel>
-                                    <Label Content="{Binding Description}"
-                                           FontWeight="Bold"
-                                           Foreground="DarkBlue" />
-                                    <TextBlock Text="{Binding StatementProcessed}"
-                                               FontFamily="Consolas"
-                                               Margin="5,0"
-                                               Background="White"
-                                               Padding="5" />
-                                    <TextBlock Text="{Binding IntermediatePredicate}"
-                                               FontFamily="Consolas"
-                                               Margin="5,0"
-                                               FontWeight="Bold" />
-                                    <TextBlock Text="{Binding HumanReadable}"
-                                               TextWrapping="Wrap"
-                                               Margin="5,0"
-                                               Foreground="DarkGreen" />
-                                </StackPanel>
-                            </Border>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-                <Border BorderBrush="Green"
-                        BorderThickness="3"
-                        Margin="5"
-                        Padding="15"
-                        Background="LightGreen"
-                        Visibility="{Binding CurrentResult.FinalPrecondition, Converter={x:Static local:Converters.NullToVisibilityConverter}}">
-                    <StackPanel>
-                        <Label Content="Итоговое слабейшее предусловие:"
-                               FontWeight="Bold"
-                               FontSize="14" />
-                        <TextBlock Text="{Binding CurrentResult.FinalPrecondition}"
-                                   FontFamily="Consolas"
-                                   FontSize="14"
-                                   FontWeight="Bold"
+                                   Margin="10,5"
+                                   FontSize="12"
+                                   Foreground="DarkBlue"
+                                   FontStyle="Italic" />
+                        <Label Content="Выберите пример:" />
+                        <ComboBox ItemsSource="{Binding Presets}"
+                                  SelectedItem="{Binding SelectedPreset}"
+                                  DisplayMemberPath="Name" />
+                        <TextBlock Text="{Binding SelectedPreset.Description}"
                                    TextWrapping="Wrap"
-                                   Background="White"
-                                   Padding="10"
-                                   Margin="0,5" />
-                        <TextBlock Text="{Binding CurrentResult.FinalPrecondition.ToHumanReadable}"
-                                   TextWrapping="Wrap"
+                                   Margin="5"
                                    FontStyle="Italic"
-                                   Foreground="DarkGreen" />
+                                   Visibility="{Binding SelectedPreset, Converter={x:Static local:Converters.NullToVisibilityConverter}}" />
+                        <Label Content="Код программы (без циклов):" />
+                        <TextBox Text="{Binding CodeInput, UpdateSourceTrigger=PropertyChanged}"
+                                 Height="100"
+                                 TextWrapping="Wrap"
+                                 AcceptsReturn="True"
+                                 VerticalScrollBarVisibility="Auto" />
+                        <Border Background="#F0F8FF" BorderBrush="LightBlue" BorderThickness="1" CornerRadius="3" Margin="5,0">
+                            <TextBlock Text="Примеры: x := 5, if (x > 0) { y := x } else { y := 0 }, x := x + 1; y := x * 2"
+                                       FontSize="10"
+                                       Foreground="DarkBlue"
+                                       TextWrapping="Wrap"
+                                       Padding="5" />
+                        </Border>
+                        <Label Content="Постусловие (цель):" />
+                        <TextBox Text="{Binding PostconditionInput, UpdateSourceTrigger=PropertyChanged}"
+                                 Height="40"
+                                 TextWrapping="Wrap" />
+
+                        <Border Background="#F0FFF0"
+                                BorderBrush="LightGreen"
+                                BorderThickness="1"
+                                CornerRadius="3"
+                                Margin="5,0">
+                            <TextBlock Text="Примеры: x > 15, max >= 100, y == 10, (x > 0 &amp;&amp; y > 0)"
+                                       FontSize="10"
+                                       Foreground="DarkGreen"
+                                       TextWrapping="Wrap"
+                                       Padding="5" />
+                        </Border>
+                        <StackPanel Orientation="Horizontal"
+                                    HorizontalAlignment="Center"
+                                    Margin="10">
+                            <Button Content="Рассчитать WP"
+                                    Command="{Binding CalculateWpCommand}"
+                                    IsEnabled="{Binding IsCalculating, Converter={x:Static local:Converters.InverseBoolConverter}}" />
+                            <Button Content="Показать триаду"
+                                    Command="{Binding ShowTripleCommand}" />
+                            <Button Content="Очистить"
+                                    Command="{Binding ClearCommand}" />
+                            <Button Content="Справка"
+                                    Command="{Binding ShowHelpCommand}"
+                                    Background="LightSkyBlue"
+                                    ToolTip="Показать подсказку как пользоваться программой" />
+                        </StackPanel>
+                        <ProgressBar IsIndeterminate="{Binding IsCalculating}"
+                                     Height="5"
+                                     Margin="5"
+                                     Visibility="{Binding IsCalculating, Converter={x:Static local:Converters.BoolToVisibilityConverter}}" />
                     </StackPanel>
-                </Border>
-               
-            </StackPanel>
-        </ScrollViewer>
-    </Grid>
+                </ScrollViewer>
+                <ScrollViewer Grid.Column="1"
+                              VerticalScrollBarVisibility="Auto">
+                    <StackPanel Margin="10">
+                        <Label Content="Результат вычисления WP"
+                               FontSize="16"
+                               FontWeight="Bold" />
+                        <Border BorderBrush="Red"
+                                BorderThickness="2"
+                                Margin="5"
+                                Padding="10"
+                                Visibility="{Binding CurrentResult.HasErrors, Converter={x:Static local:Converters.BoolToVisibilityConverter}}">
+                            <StackPanel>
+                                <Label Content="Ошибка:"
+                                       Foreground="Red" />
+                                <TextBlock Text="{Binding CurrentResult.ErrorMessage}"
+                                           TextWrapping="Wrap"
+                                           Foreground="Red" />
+                            </StackPanel>
+                        </Border>
+                        <ItemsControl ItemsSource="{Binding CurrentResult.Steps}"
+                                      Visibility="{Binding CurrentResult.HasErrors, Converter={x:Static local:Converters.InverseBoolToVisibilityConverter}}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border BorderBrush="LightBlue"
+                                            BorderThickness="1"
+                                            Margin="5"
+                                            Padding="10"
+                                            Background="AliceBlue">
+                                        <StackPanel>
+                                            <Label Content="{Binding Description}"
+                                                   FontWeight="Bold"
+                                                   Foreground="DarkBlue" />
+                                            <TextBlock Text="{Binding StatementProcessed}"
+                                                       FontFamily="Consolas"
+                                                       Margin="5,0"
+                                                       Background="White"
+                                                       Padding="5" />
+                                            <TextBlock Text="{Binding IntermediatePredicate}"
+                                                       FontFamily="Consolas"
+                                                       Margin="5,0"
+                                                       FontWeight="Bold" />
+                                            <TextBlock Text="{Binding HumanReadable}"
+                                                       TextWrapping="Wrap"
+                                                       Margin="5,5,5,0"
+                                                       Foreground="DarkGreen" />
+                                        </StackPanel>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                        <Border BorderBrush="Green"
+                                BorderThickness="3"
+                                Margin="5"
+                                Padding="15"
+                                Background="LightGreen"
+                                Visibility="{Binding CurrentResult.FinalPrecondition, Converter={x:Static local:Converters.NullToVisibilityConverter}}">
+                            <StackPanel>
+                                <Label Content="Итоговое слабейшее предусловие:"
+                                       FontWeight="Bold"
+                                       FontSize="14" />
+                                <TextBlock Text="{Binding CurrentResult.FinalPrecondition}"
+                                           FontFamily="Consolas"
+                                           FontSize="14"
+                                           FontWeight="Bold"
+                                           TextWrapping="Wrap"
+                                           Background="White"
+                                           Padding="10"
+                                           Margin="0,5" />
+                                <TextBlock Text="{Binding CurrentResult.FinalPrecondition.ToHumanReadable}"
+                                           TextWrapping="Wrap"
+                                           FontStyle="Italic"
+                                           Foreground="DarkGreen" />
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </ScrollViewer>
+            </Grid>
 </Window>

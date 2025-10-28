@@ -50,6 +50,7 @@ namespace lab2.Models
                 return "Ошибка построения триады";
             return $"{{ {FinalPrecondition} }} {OriginalCode} {{ {OriginalPostcondition} }}";
         }
+
     }
 
     public class PresetExample
@@ -79,9 +80,9 @@ namespace lab2.Models
                 ),
                 new PresetExample(
                     "Последовательность присваиваний",
-                    "Демонстрация протягивания условия через цепочку присваиваний",
+                    "Цель y = x − 9 и x > 15 тянется назад через x := x+10; y := x - 9 до x > 5",
                     "x := x + 10; y := x - 9",
-                    "y > 0 && x > 15"
+                    "y == x - 9 && x > 15"
                 ),
                 new PresetExample(
                     "Квадратное уравнение (упрощенное)",
